@@ -4,13 +4,6 @@ import requests
 import settings
 
 logger = settings.logging.getLogger("market_bot_log")
-
-class TickerList(commands.Converter):
-    async def convert(self, ctx, stream):
-        print(stream)
-        for ticker in stream:
-            print(ticker)
-        return [ticker.upper() for ticker in stream if ticker.isalpha()]    
     
 def run():
     intents = discord.Intents.all()
@@ -24,29 +17,47 @@ def run():
         print("_"*50)
     
     @bot.command(
-        alias = ['tick'],
+        aliases=['ticks'],
         name = 'tickers',
         help = 'Reports Ticker Information Given Stream of Tickers'
     )
-    async def tickers(ctx, *tickers: TickerList):
+    async def tickers(ctx, *tickers):
         for ticker in tickers:
-            print(f"{ticker}\n")
+            print(ticker)
             url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.SECRET_ALPHA_VINTAGE_KEY}'
             response = requests.get(url)
             data = response.json()
             if 'Global Quote' in data:
                 stock_data = data['Global Quote']
                 symbol = stock_data['01. symbol']
+                open = float(stock_data['02. open'])
+                high = float(stock_data['03. high'])
+                low = float(stock_data['04. low'])
                 price = stock_data['05. price']
+                volume = stock_data['06. volume']
+                latest_trade_day = stock_data['07. latest trading day']
+                previous_close = stock_data['08. previous close']
+                change = stock_data['09. change']
+                percent_change = stock_data['10. change percent']
                 await ctx.send(f'Stock: {symbol}, Price: {price}')
             else:
                 await ctx.send(f'Could not find information for {ticker}')
 
     @bot.command()
-    async def clear(ctx):
-        """Clears the chat"""
-        await ctx.channel.purge(limit=20)
+    async def clear(ctx, amount="all"):
+        """Clears the chat for an optional number of messages"""
+        if amount.lower() == "all":
+            await ctx.channel.purge(limit=None)
+        else:
+            try:
+                amount = int(amount)
+                await ctx.channel.purge(limit=amount)
+            except ValueError:
+                await ctx.send("Invalid amount. Please provide a number or 'all'.")    
     
+
+
+
     bot.run(settings.SECRET_BOT_TOKEN, root_logger=True)
 
 if __name__ == "__main__":
