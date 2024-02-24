@@ -1,3 +1,4 @@
+import pathlib
 import os
 import logging
 from logging.config import dictConfig
@@ -7,6 +8,9 @@ load_dotenv()
 SECRET_BOT_TOKEN = os.getenv("BOT_TOKEN")
 SECRET_MARKET_CHANNEL_ID = os.getenv("MARKET_CHANNEL_ID")
 SECRET_ALPHA_VINTAGE_KEY = os.getenv("ALPHA_VINTAGE_KEY")
+
+BASE_DIR = pathlib.Path(__file__).parent
+COGS_DIR = BASE_DIR / "cogs"
 
 LOGGING_CONFIG = {
     "version": 1,
