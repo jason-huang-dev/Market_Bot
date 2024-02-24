@@ -1,7 +1,6 @@
 from discord.ext import commands
 import discord
 import requests
-
 from ..constants import  *
 
 intents = discord.Intents.default()
@@ -9,7 +8,6 @@ intents.message_content = True
 prefix = '/'
 
 bot = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
-client = discord.Client()
 
 @bot.event
 async def on_ready():
