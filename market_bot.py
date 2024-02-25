@@ -12,25 +12,72 @@ def run():
     @bot.event
     async def on_ready():
         channel = bot.get_channel(settings.SECRET_MARKET_CHANNEL_ID)
-        for cog_file in settings.COGS_DIR.glob("*.py"):
-            if cog_file.name != "__init__.py":
-                await bot.load_extension(f"cogs.{cog_file.name[:-3]}")
+        print(settings.SLASH_CMDS_DIR)
+        for slash_cmd_file in settings.SLASH_CMDS_DIR.glob("*.py"):
+            if slash_cmd_file.name != "__init__.py":
+                print(slash_cmd_file[:-3])
+                await bot.load_extension(f"slash_cmds.{slash_cmd_file[:-3]}")
+        bot.tree.copy_global_to(guild=settings.SECRET_GUILD_ID)
+        await bot.tree.sync(guild=settings.SECRET_GUILD_ID)
         print("_"*50)    
         logger.info(f"\nMarket Bot is ready\nUser: {bot.user} (ID: {bot.user.id})")
+        logger.info(f"\nGuild ID: {bot.guilds[0].id}")
         print("_"*50)    
 
-    @bot.command()
-    async def reload(ctx, cog : str):
-        """Reloads a specified cog file <singular groupname>_cogs"""
-        await bot.reload_extension(f"cogs.{cog.lower()}")
-    @bot.command()
-    async def load(ctx, cog : str):
-        """Loads a specified cog file <singular groupname>_cogs"""
-        await bot.load_extension(f"cogs.{cog.lower()}")
-    @bot.command()
-    async def unload(ctx, cog : str):
-        """Unloads a specified cog file <singular groupname>_cogs"""
-        await bot.unload_extension(f"cogs.{cog.lower()}")
+    class NotOwner(commands.CheckFailure):
+        ...
+    
+    def is_owner():
+        async def predicate(ctx):
+            if ctx.author.id != ctx.guild.owner_id:
+                raise NotOwner("You are not the owner of this server.")
+            return True
+        return commands.check(predicate)
+
+    @bot.tree.command(
+        name="reload", 
+        description="Reloads a specified slash_cmds subfile <plural groupname>"
+    )
+    @is_owner()
+    async def reload(interaction: discord.Interaction, slash_cmd : str):
+        slash_cmd_name = f"slash_cmds.{slash_cmd.lower}"
+        try:
+            await bot.reload_extension(slash_cmd_name)
+            logger.info(f"Cog {slash_cmd_name} reloaded successfully.")
+            await interaction.response.send_message(f"Cog {slash_cmd_name} reloaded successfully.")
+        except commands.ExtensionNotLoaded:
+            await bot.load_extension(slash_cmd_name)
+            logger.info(f"Cog {slash_cmd_name} loaded successfully.")
+            await interaction.response.send_message(f"Cog {slash_cmd_name} loaded successfully.")
+        except Exception as e:
+            logger.error(f"Failed to reload cog {slash_cmd_name}: {e}")
+            await interaction.response.send_message(f"Failed to reload cog {slash_cmd_name}: {e}")        
+    
+    @bot.tree.command(
+        name="load",
+        description="Loads a specified slash_cmds subfile <plural groupname>"
+    )
+    @is_owner()
+    async def load(interaction: discord.Interaction, slash_cmd : str):
+        slash_cmd_name = f"slash_cmds.{slash_cmd.lower}"
+        try:
+            await bot.load_extension(slash_cmd_name)
+            logger.info(f"Cog {slash_cmd_name} loaded successfully.")
+        except Exception as e:
+            logger.error(f"Failed to load cog {slash_cmd_name}: {e}")       
+    
+    @bot.tree.command(
+        name= "unload",
+        description="Unloads a specified slash_cmds subfile <plural groupname>"
+    )
+    @is_owner()
+    async def unload(interaction: discord.Interaction, slash_cmd : str):
+        slash_cmd_name = f"slash_cmds.{slash_cmd.lower}"
+        try:
+            await bot.unload_extension(slash_cmd_name)
+            logger.info(f"Cog {slash_cmd_name} unloaded successfully.")
+        except Exception as e:
+            logger.error(f"Failed to unload cog {slash_cmd_name}: {e}")       
 
     bot.run(settings.SECRET_BOT_TOKEN, root_logger=True)
 

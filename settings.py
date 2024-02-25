@@ -3,14 +3,16 @@ import os
 import logging
 from logging.config import dictConfig
 from dotenv import load_dotenv
+import discord
 
 load_dotenv()
 SECRET_BOT_TOKEN = os.getenv("BOT_TOKEN")
 SECRET_MARKET_CHANNEL_ID = os.getenv("MARKET_CHANNEL_ID")
 SECRET_ALPHA_VINTAGE_KEY = os.getenv("ALPHA_VINTAGE_KEY")
+SECRET_GUILD_ID = discord.Object(id=int(os.getenv("GUILD_ID")))
 
 BASE_DIR = pathlib.Path(__file__).parent
-COGS_DIR = BASE_DIR / "cogs"
+SLASH_CMDS_DIR = BASE_DIR / "slash_cmds"
 
 LOGGING_CONFIG = {
     "version": 1,

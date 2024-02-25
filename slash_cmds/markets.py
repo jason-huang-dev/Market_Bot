@@ -1,22 +1,22 @@
-from discord.ext import commands
+from discord import app_commands
 import discord
 import requests
 import settings
     
-class Markets(commands.Cog):
+class Markets(app_commands.Group):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
+    @app_commands.listener()
     async def on_message(self, message):
         await message.add_reaction("🫡")
 
-    @commands.command(
+    @app_commands.command(
         aliases=['ticks'],
         name = 'tickers',
         help = 'Reports Ticker Information Given Stream of Tickers'
     )
-    async def tickers(self, ctx, *tickers):
+    async def tickers(self, interaction: discord.Interaction, *tickers):
         for ticker in tickers:
             print(ticker)
             url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.SECRET_ALPHA_VINTAGE_KEY}'
@@ -34,9 +34,9 @@ class Markets(commands.Cog):
                 previous_close = stock_data['08. previous close']
                 change = stock_data['09. change']
                 percent_change = stock_data['10. change percent']
-                await ctx.send(f'Stock: {symbol}, Price: {price}')
+                await interaction.response.send_message(f'Stock: {symbol}, Price: {price}')
             else:
-                await ctx.send(f'Could not find information for {ticker}')
+                await interaction.response.send_message(f'Could not find information for {ticker}')
 
 async def setup(bot):
-    await bot.add_cog(Markets(bot))
+    await bot.tree.add_command(Markets(name="markets"))
