@@ -8,9 +8,11 @@ class Markets(app_commands.Group):
         name = 'tickers',
         description="Reports Ticker Information Given Stream of Tickers"
     )
-    async def tickers(self, interaction: discord.Interaction, *tickers: str):
-        for ticker in tickers:
-            print(ticker)
+    @app_commands.describe(tickers_list = "list of space separated tickers that you want to look up")
+    @app_commands.rename(tickers_list = "tickers")
+    async def tickers(self, interaction: discord.Interaction, tickers_list: str):
+        message = ""
+        for ticker in tickers_list.split(" "):
             url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.SECRET_ALPHA_VINTAGE_KEY}'
             response = requests.get(url)
             data = response.json()
@@ -26,9 +28,10 @@ class Markets(app_commands.Group):
                 previous_close = stock_data['08. previous close']
                 change = stock_data['09. change']
                 percent_change = stock_data['10. change percent']
-                await interaction.response.send_message(f'Stock: {symbol}, Price: {price}')
+                message += str(f'Stock: {symbol}, Price: {price}\n')
             else:
                 await interaction.response.send_message(f'Could not find information for {ticker}')
+        await interaction.response.send_message(message)
 
 async def setup(bot):
     bot.tree.add_command(Markets(name="markets", description="General Market Functions"))

@@ -6,6 +6,8 @@ class Utils(app_commands.Group):
         name = 'clear',
         description="Clears the chat for an optional number of messages (clear all if no number is passed through)"
     )
+    @app_commands.describe(amount = "number of messages you want to purge from chat (no value means all)")
+    @app_commands.rename(amount = "amount")
     async def clear(self, interaction: discord.Interaction, amount: str=None):
         if amount == None:
             await interaction.channel.purge(limit=None)

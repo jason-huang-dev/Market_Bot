@@ -37,18 +37,18 @@ def run():
     )
     @is_owner()
     async def reload(interaction: discord.Interaction, slash_cmd : str):
-        slash_cmd_name = f"slash_cmds.{slash_cmd.lower}"
+        slash_cmd_name = f"slashcmds.{slash_cmd.lower()}"
         try:
             await bot.reload_extension(slash_cmd_name)
-            logger.info(f"Cog {slash_cmd_name} reloaded successfully.")
-            await interaction.response.send_message(f"Cog {slash_cmd_name} reloaded successfully.")
+            logger.info(f"Slashcmd {slash_cmd_name} reloaded successfully.")
+            await interaction.response.send_message(f"Slashcmd {slash_cmd_name} reloaded successfully.")
         except commands.ExtensionNotLoaded:
             await bot.load_extension(slash_cmd_name)
-            logger.info(f"Cog {slash_cmd_name} loaded successfully.")
-            await interaction.response.send_message(f"Cog {slash_cmd_name} loaded successfully.")
+            logger.info(f"Slashcmd {slash_cmd_name} loaded successfully.")
+            await interaction.response.send_message(f"Slashcmd {slash_cmd_name} loaded successfully.")
         except Exception as e:
-            logger.error(f"Failed to reload cog {slash_cmd_name}: {e}")
-            await interaction.response.send_message(f"Failed to reload cog {slash_cmd_name}: {e}")        
+            logger.error(f"Failed to reload Slashcmd {slash_cmd_name}: {e}")
+            await interaction.response.send_message(f"Failed to reload Slashcmd {slash_cmd_name}: {e}")        
     
     @bot.tree.command(
         name="load",
@@ -56,12 +56,12 @@ def run():
     )
     @is_owner()
     async def load(interaction: discord.Interaction, slash_cmd : str):
-        slash_cmd_name = f"slash_cmds.{slash_cmd.lower}"
+        slash_cmd_name = f"slashcmds.{slash_cmd.lower()}"
         try:
             await bot.load_extension(slash_cmd_name)
-            logger.info(f"Cog {slash_cmd_name} loaded successfully.")
+            logger.info(f"Slashcmd {slash_cmd_name} loaded successfully.")
         except Exception as e:
-            logger.error(f"Failed to load cog {slash_cmd_name}: {e}")       
+            logger.error(f"Failed to load Slashcmd {slash_cmd_name}: {e}")       
     
     @bot.tree.command(
         name= "unload",
@@ -69,12 +69,12 @@ def run():
     )
     @is_owner()
     async def unload(interaction: discord.Interaction, slash_cmd : str):
-        slash_cmd_name = f"slash_cmds.{slash_cmd.lower}"
+        slash_cmd_name = f"slashcmds.{slash_cmd.lower()}"
         try:
             await bot.unload_extension(slash_cmd_name)
-            logger.info(f"Cog {slash_cmd_name} unloaded successfully.")
+            logger.info(f"Slashcmd {slash_cmd_name} unloaded successfully.")
         except Exception as e:
-            logger.error(f"Failed to unload cog {slash_cmd_name}: {e}")       
+            logger.error(f"Failed to unload Slashcmd {slash_cmd_name}: {e}")       
 
     bot.run(settings.SECRET_BOT_TOKEN, root_logger=True)
 
