@@ -13,10 +13,9 @@ def run():
     async def on_ready():
         channel = bot.get_channel(settings.SECRET_MARKET_CHANNEL_ID)
         print(settings.SLASH_CMDS_DIR)
-        for slash_cmd_file in settings.SLASH_CMDS_DIR.glob("*.py"):
-            if slash_cmd_file.name != "__init__.py":
-                print(slash_cmd_file[:-3])
-                await bot.load_extension(f"slash_cmds.{slash_cmd_file[:-3]}")
+        for slashcmd_file in settings.SLASH_CMDS_DIR.glob("*.py"):
+            if slashcmd_file.name != "__init__.py":
+                await bot.load_extension(f"slashcmds.{slashcmd_file.name[:-3]}")
         bot.tree.copy_global_to(guild=settings.SECRET_GUILD_ID)
         await bot.tree.sync(guild=settings.SECRET_GUILD_ID)
         print("_"*50)    

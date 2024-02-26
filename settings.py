@@ -12,7 +12,7 @@ SECRET_ALPHA_VINTAGE_KEY = os.getenv("ALPHA_VINTAGE_KEY")
 SECRET_GUILD_ID = discord.Object(id=int(os.getenv("GUILD_ID")))
 
 BASE_DIR = pathlib.Path(__file__).parent
-SLASH_CMDS_DIR = BASE_DIR / "slash_cmds"
+SLASH_CMDS_DIR = BASE_DIR / "slashcmds"
 
 LOGGING_CONFIG = {
     "version": 1,
