@@ -8,8 +8,8 @@ class Markets(app_commands.Group):
         name = 'tickers',
         description="Reports Ticker Information Given Stream of Tickers"
     )
-    async def tickers(self, interaction: discord.Interaction):
-        for ticker in interaction.data:
+    async def tickers(self, interaction: discord.Interaction, *tickers: str):
+        for ticker in tickers:
             print(ticker)
             url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.SECRET_ALPHA_VINTAGE_KEY}'
             response = requests.get(url)

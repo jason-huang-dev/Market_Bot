@@ -6,13 +6,11 @@ logger = settings.logging.getLogger("market_bot_log")
     
 def run():
     intents = discord.Intents.all()
-    intents.message_content = True
     prefix = '/'
     bot = commands.Bot(command_prefix=prefix, intents=intents)
     @bot.event
     async def on_ready():
         channel = bot.get_channel(settings.SECRET_MARKET_CHANNEL_ID)
-        print(settings.SLASH_CMDS_DIR)
         for slashcmd_file in settings.SLASH_CMDS_DIR.glob("*.py"):
             if slashcmd_file.name != "__init__.py":
                 await bot.load_extension(f"slashcmds.{slashcmd_file.name[:-3]}")

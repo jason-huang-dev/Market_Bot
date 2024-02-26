@@ -4,10 +4,10 @@ import discord
 class Utils(app_commands.Group):
     @app_commands.command(
         name = 'clear',
-        description="Clears the chat for an optional number of messages"
+        description="Clears the chat for an optional number of messages (clear all if no number is passed through)"
     )
-    async def clear(self, interaction: discord.Interaction):
-        if interaction.data[0].lower() == "all":
+    async def clear(self, interaction: discord.Interaction, amount: str=None):
+        if amount == None:
             await interaction.channel.purge(limit=None)
         else:
             try:
