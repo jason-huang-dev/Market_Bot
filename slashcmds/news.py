@@ -44,9 +44,8 @@ class News(app_commands.Group):
             message += "Title: " + article.title + "\n"
             message += "\t\tLink: " + articles["link"] + "\n"
             message += "\t\tMedia: " + articles["media"][i] + "\t\tDate: " + articles["date"][i] + "\n"
-
-        
-        await interaction.response.send_message(f'Could not find information for {search_key}')
+            message += "\t\tSummary:\n" + article.summary + "\n"
+            
         await interaction.response.send_message(message)
 
 async def setup(bot):
