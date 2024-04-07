@@ -20,7 +20,7 @@ class News(app_commands.Group):
     @app_commands.rename(start = "start_date")
     @app_commands.describe(end = "end date to search mm/dd/yyyy")
     @app_commands.rename(end = "end_date")
-    async def news(self, interaction: discord.Interaction, search_key: str, period: str="", start: str="", end: str=""):
+    async def news(self, interaction: discord.Interaction, search_key: str, period: str="1d", start: str="", end: str=""):
         message = ""
         #General set up of 403 unauthorized client
         nltk.download('punkt')
@@ -29,22 +29,31 @@ class News(app_commands.Group):
         config.browser_user_agent = user_agent
 
         #Gets/Setsup everything from Google News
+        if start or end: period=""
         gNews = GoogleNews(period=period, start=start, end=end) # set up google news with given time frame
         gNews.search(search_key) # search for given key
         result  = gNews.results(sort=True) # get results and sorts it 
+        # for article in result:
+        #     print("Title: ", article['title'])
+        #     print("Link: ", article['link'])
+        #     print("Media: ", article['media'])
+        #     print("Date: ", article['date'])
+        #     print()
         articles = pd.DataFrame(result)
         articles.drop(columns=["img"])
         articles.head()
 
         #Iterates through n pages of the goolge new results
-        for i in range(2,5):
+        for i in range(2, 5):
             gNews.getpage(i)
             result=gNews.result()
             articles=pd.DataFrame(result)
 
-        for i in articles.index:
+        for i in range(1, 10):
             try:
-                article = Article(articles['link'][i], config=config)
+                url_parts = articles['link'][i].split('&ved')
+                new_url = url_parts[0]
+                article = Article(new_url, config=config)
                 article.download()
                 article.parse()
                 article.nlp()
@@ -53,8 +62,9 @@ class News(app_commands.Group):
                 message += "\t\tMedia: " + articles["media"][i] + "\t\tDate: " + articles["date"][i] + "\n"
                 message += "\t\tSummary:\n" + article.summary + "\n"
             except ArticleException as e:
+                continue
                 # Handle the exception (e.g., log the error or skip the article)
-                print(f"Failed to process article: {e}")            
+                # print(f"Failed to process article: {e}")            
         await interaction.response.send_message(message)
 
 async def setup(bot):
