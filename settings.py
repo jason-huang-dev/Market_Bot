@@ -10,6 +10,7 @@ SECRET_BOT_TOKEN = os.getenv("BOT_TOKEN")
 SECRET_MARKET_CHANNEL_ID = os.getenv("MARKET_CHANNEL_ID")
 SECRET_ALPHA_VINTAGE_KEY = os.getenv("ALPHA_VINTAGE_KEY")
 SECRET_GUILD_ID = discord.Object(id=int(os.getenv("GUILD_ID")))
+LOG_DIR = "Logs/infos.log"
 
 BASE_DIR = pathlib.Path(__file__).parent
 SLASH_CMDS_DIR = BASE_DIR / "slashcmds"
@@ -39,7 +40,7 @@ LOGGING_CONFIG = {
         "file":{
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "Logs/infos.log",
+            "filename": LOG_DIR,
             "mode": "w",
             "formatter": "verbose",
         }

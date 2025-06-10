@@ -3,4 +3,4 @@ __pycache__
 .venv
 discord-connection.json
 .env
-Logs
+infos.log
