@@ -1,6 +1,6 @@
 constants.py
 __pycache__
-venv
+.venv
 discord-connection.json
 .env
 Logs
