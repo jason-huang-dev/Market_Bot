@@ -1,18 +1,18 @@
-import pathlib
+from pathlib import Path
 import os
 import logging
 from logging.config import dictConfig
 from dotenv import load_dotenv
 import discord
 
-load_dotenv()
+BASE_DIR = Path(__file__).parent
+load_dotenv(override=True)
 SECRET_BOT_TOKEN = os.getenv("BOT_TOKEN")
 SECRET_MARKET_CHANNEL_ID = os.getenv("MARKET_CHANNEL_ID")
 SECRET_ALPHA_VINTAGE_KEY = os.getenv("ALPHA_VINTAGE_KEY")
 SECRET_GUILD_ID = discord.Object(id=int(os.getenv("GUILD_ID")))
 LOG_DIR = "Logs/infos.log"
 
-BASE_DIR = pathlib.Path(__file__).parent
 SLASH_CMDS_DIR = BASE_DIR / "slashcmds"
 
 LOGGING_CONFIG = {

@@ -74,9 +74,9 @@ def run():
             await bot.unload_extension(slash_cmd_name)
             logger.info(f"Slashcmd {slash_cmd_name} unloaded successfully.")
         except Exception as e:
-            logger.error(f"Failed to unload Slashcmd {slash_cmd_name}: {e}")       
-
-    bot.run(settings.SECRET_BOT_TOKEN, root_logger=True)
+            logger.error(f"Failed to unload Slashcmd {slash_cmd_name}: {e}")   
+    
+    bot.run(token=settings.SECRET_BOT_TOKEN, root_logger=True)
 
 if __name__ == "__main__":
     run()
